@@ -1,0 +1,60 @@
+.card{
+    display: grid;
+      grid-template-columns: repeat(4, 3fr) !important;
+  }
+  .img{
+    background-image: url("download.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  
+  }
+  .img2{
+    background-image: url("15599.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+ .temp{
+  font-size: 70px;
+  text-align: center;
+  font-weight: 500;
+ }
+ .rain{
+  font-size: 38px;
+  /* text-align: center; */
+  font-weight: 400;
+
+ }
+ .para{
+  font-size: 15px;
+  text-align: center;
+  font-weight: 400;
+
+ }
+ .box1{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 10px;
+ }
+ .box2{
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  align-items: center;
+ }
+ .icon{
+  display: block !important;
+    margin: 0 auto !important;
+    font-size: 50px !important;
+    color: #ffcc00 ;
+ }
+ .icon1{
+  display: block !important;
+    margin: 0 auto !important;
+    font-size: 50px !important;
+ }
+ 
+ .title{
+  text-align: center;
+ }
