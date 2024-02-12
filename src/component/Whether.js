@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import PlaceIcon from '@mui/icons-material/Place';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WbTwilightIcon from '@mui/icons-material/WbTwilight';
-import Brightness5Icon from '@mui/icons-material/Brightness5';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+// import Brightness5Icon from '@mui/icons-material/Brightness5';
+import Footer from './Footer';
+import TimeDate from './TImeDate';
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
-  const [city, setCity] = useState("surat");
+  const [city, setCity] = useState("Noida");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const Weather = () => {
       const data = await response.json();
       console.log("response", data);
       setWeatherData(data);
-      setError(null); // Reset error if the request is successful
+      setError(null);
     } catch (error) {
       console.error("Error fetching weather data", error);
       setWeatherData(null);
@@ -33,105 +36,279 @@ const Weather = () => {
   };
 
   let celsiusTemperature = weatherData?.main?.temp - 273.15;
-// Sunrise
+
   const timestamp = weatherData?.sys?.sunrise
-const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
-const options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'Asia/Kolkata' };
-const formattedTime = date.toLocaleString('en-IN', options);
+  const date = new Date(timestamp * 1000);
+  const options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'Asia/Kolkata' };
+  const formattedTime = date.toLocaleString('en-IN', options);
 
-//Sunset
-const sunset_timestamp = weatherData?.sys?.sunset;
-const sunset_date = new Date(sunset_timestamp * 1000); // Convert seconds to milliseconds
-const sunset_options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'Asia/Kolkata' };
-const sunset_formattedTime = sunset_date.toLocaleString('en-IN', sunset_options);
+  //sunset
 
-//24 hr
+  const sunset_timestamp = weatherData?.sys?.sunset;
+  const sunset_date = new Date(sunset_timestamp * 1000);
+  const sunset_options = { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'Asia/Kolkata' };
+  const sunset_formattedTime = sunset_date.toLocaleString('en-IN', sunset_options);
 
-const sunriseTimestamp = weatherData?.sys?.sunrise;
-const sunriseDate = new Date(sunriseTimestamp * 1000); // Convert seconds to milliseconds
+  const currentTime = Date.now() / 1000;
+ 
 
-const sunsetTimestamp = weatherData?.sys?.sunset;
-const sunsetDate = new Date(sunsetTimestamp * 1000); // Convert seconds to milliseconds
+  const isSunrise = currentTime > timestamp;
+const isSunset = currentTime > timestamp && currentTime < sunset_timestamp;
+console.log(isSunrise);
 
 // Calculate day length in milliseconds
-const dayLengthMilliseconds = sunsetDate - sunriseDate;
+const dayLengthMilliseconds = sunset_date - date;
 
 // Convert day length from milliseconds to hours and minutes
 const dayLengthHours = Math.floor(dayLengthMilliseconds / (1000 * 60 * 60));
 const dayLengthMinutes = Math.floor((dayLengthMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
 
 const dayLengthFormatted = `${dayLengthHours} hr ${dayLengthMinutes} min`;
+console.log("dayLength", dayLengthFormatted);
+const currentDate = new Date();
+
+// Formatting options for Indian time zone (IST)
+const optionss = {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  // second: '2-digit',
+  hour12: true,
+  timeZone: 'Asia/Kolkata'
+};
+
+// Format the date and time in Indian time zone
+const formattedDateTime = currentDate.toLocaleString('en-IN', optionss);
+console.log(formattedDateTime);
+
+
   return (
     <>
       {console.log(error)}
-      <section className="bg-gray-50 dark:bg-gray-900 img">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-            <div className="p-3 space-y-4 md:space-y-6 sm:p-8 bg-gray-900">
-              <div className='flex items-center'>
-                <PlaceIcon className='text-white text-xs' />
-                <input
-                  className='w-full px-4 bg-gray-500 text-white py-1 border border-gray-500 rounded-md focus:outline-none focus:border-gray-500'
-                  type='text'
-                  placeholder={weatherData?.name}
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-  
-                />
-              </div>
-              <div className='img2 shadow-lg p-4'>
-                <h1 className='text-white'>{city}, {weatherData?.sys?.country}</h1>
-                <div className=' flex justify-between content-center'>
-                  <h1 className='temp text-white'>{celsiusTemperature?.toFixed(0) + "°C"}</h1>
-                  {weatherData && (
-                    <img
-                      src={`https://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`}
-                      alt="Weather Icon"
-                      className='temp'
+      <div className={isSunrise ? 'container2' : (isSunset? 'container1':'')}>
+        <section className="img">
+          <div className='flbox'>
+
+            <div className=" flex shadow-lg gap-4 justify-center justify-items-center	items-center	px-8 py-8">
+              <div className="w-full vv rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="p-3 space-y-4 md:space-y-6 sm:p-8 boxcolor">
+                  <div className='flex items-center inputbox'>
+                    <PlaceIcon className='text-white text-xs location' />
+                    <input
+                      className='input w-full px-4 text-white'
+                      type='text'
+                      placeholder={weatherData?.name}
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+
                     />
+                  </div>
+                  <div className='hhhhh'>
+                    <div className=' flex justify-between content-center'>
+                      <div className='temops'>
+                        <h1 className='temp text-white'>{celsiusTemperature?.toFixed(0) + "°C"}</h1>
+                        <p className='flex text-white'>{weatherData?.weather[0]?.description}</p>
+                      </div>
+                      <div className='imgdd'>
+                        {weatherData && (
+                          <img
+                            src={`https://openweathermap.org/img/wn/${weatherData?.weather[0]?.icon}@2x.png`}
+                            alt="Weather Icon"
+                            className='temp'
+                          />
+                        )}
+                        <p className='rain text-white'>{weatherData?.weather[0]?.main}</p>
+                      </div>
+                    </div>
+                    
+
+                    <p className='para text-white'><TimeDate/> </p>
+                    <div className='box1 vi'>
+                      <div className='vish box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <WbSunnyIcon className=' text-9xl icon' />
+                          <h1 className='content-center title'>Sunrise</h1>
+                          <h1 className='content-center title'>{formattedTime}</h1>
+                        </div>
+                      </div>
+                      <div className='vish box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <DarkModeIcon className='text-9xl icon2' />
+                          <h1 className='content-center title'>Sunset</h1>
+                          <h1 className='content-center title'>{sunset_formattedTime}</h1>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='box1'>
+                      <div className='vish  box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <WbTwilightIcon className='text-9xl icon' />
+                          <h1 className='content-center title'>Day Length</h1>
+                          <h1 className='content-center title'>{dayLengthFormatted}</h1>
+                        </div>
+                      </div>
+                      <div className='vish box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <WbTwilightIcon className='text-9xl icon' />
+                          <h1 className='content-center title'>Sunset</h1>
+                          <h1 className='content-center title'>{sunset_formattedTime}</h1>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {error && (
+                    <div className="text-red-500 text-sm">
+                      Error: {error}
+                    </div>
                   )}
                 </div>
-                <p className='rain text-white'>{weatherData?.weather[0]?.main}</p>
-                <p className='flex text-white'>{weatherData?.weather[0]?.description}</p>
-                <p className='para'>loredfvj dfs bjh fgjhkghdfg g ohgoidgoi fodigdo dkghod eydeyyuguyggrrtgte tgtrgrger </p>
-                <div className='box1'>
-                  <div className='bg-white  box2 shadow-lg p-4'>
-                    <div className='content-center h-full w-full'>
-                        <WbSunnyIcon className=' text-9xl icon'/>
-                      <h1 className='content-center title'>Sunrise</h1>
-                      <h1 className='content-center title'>{formattedTime}</h1>
+              </div>
+              {/* new */}
+              <div className="w-full vv rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="p-3 space-y-4 md:space-y-6 sm:p-8 boxcolor">
+
+                  <div className='hhhh'>
+
+                    <div className='box1'>
+                      <div className='vish  box2 shadow-lg p-5'>
+                        <h1 className='text-white'>Whether Day By Day</h1>
+                        <div className='content-center h-full w-full flex gap-6 snap'>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div className='box1'>
+                      <div className='vish  box2 shadow-lg p-5'>
+                        <h1 className='text-white'>Whether Day By Day</h1>
+                        <div className='content-center h-full w-full flex gap-6 snap'>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                          <div className='secbox'>
+                            <WbSunnyIcon className=' text-9xl icon' />
+                            <h1 className='content-center title'>Sunrise</h1>
+                            <h1 className='content-center title'>{formattedTime}</h1>
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div className='box1'>
+                      <div className='vish box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <WbTwilightIcon className='text-9xl icon' />
+                          <h1 className='content-center title'>Sunset</h1>
+                          <h1 className='content-center title'>{sunset_formattedTime}</h1>
+                        </div>
+                      </div>
+                      <div className='vish box2 shadow-lg p-4'>
+                        <div className='content-center h-full w-full'>
+                          <WbTwilightIcon className='text-9xl icon' />
+                          <h1 className='content-center title'>Sunset</h1>
+                          <h1 className='content-center title'>{sunset_formattedTime}</h1>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className='bg-white box2 shadow-lg p-4'>
-                    <div className='content-center h-full w-full'>
-                    <WbTwilightIcon className='text-9xl icon1 text-orange-700'/>
-                    <h1 className='content-center title'>Sunset</h1>
-                    <h1 className='content-center title'>{sunset_formattedTime}</h1>
+                  {error && (
+                    <div className="text-red-500 text-sm">
+                      Error: {error}
                     </div>
-                  </div>
-                </div>
-                <div className='box1'>
-                  <div className='bg-white  box2 shadow-lg p-4'>
-                    <div className='content-center h-full w-full'>
-                    <Brightness5Icon  className=' text-9xl icon'/>
-                    <h1  className='content-center title'>Day length</h1>
-                    <h1 className='content-center title'>{dayLengthFormatted}</h1>
-                    </div>
-                  </div>
-                  <div className='bg-white box2 shadow-lg p-4'>
-                    df
-                  </div>
+                  )}
                 </div>
               </div>
-              {error && (
-                <div className="text-red-500 text-sm">
-                  Error: {error}
-                </div>
-              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
+      <Footer/> 
     </>
   );
 }

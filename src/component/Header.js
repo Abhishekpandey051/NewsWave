@@ -8,7 +8,7 @@ export default function Header() {
     }
   return (
     <div>
-      <nav className="bg-gray-800 p-4">
+      <nav className="bg-gray-800 p-7">
       <div className="container-fluid mx-auto">
         <div className="flex items-center justify-between">
           <Link to={"/"} className="text-white font-bold text-xl">News Wave</Link>
